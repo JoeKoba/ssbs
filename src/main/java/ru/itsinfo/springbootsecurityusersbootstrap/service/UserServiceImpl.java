@@ -12,24 +12,22 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.itsinfo.springbootsecurityusersbootstrap.config.exception.LoginException;
 import ru.itsinfo.springbootsecurityusersbootstrap.model.Role;
 import ru.itsinfo.springbootsecurityusersbootstrap.model.User;
 import ru.itsinfo.springbootsecurityusersbootstrap.repository.RoleRepository;
 import ru.itsinfo.springbootsecurityusersbootstrap.repository.UserRepository;
 
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
-public class AppServiceImpl implements AppService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AppServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -48,19 +46,8 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public void authenticateOrLogout(Model model, HttpSession session, LoginException authenticationException, String authenticationName) {
-        if (authenticationException != null) { // Восстанавливаем неверно введенные данные
-            try {
-                model.addAttribute("authenticationException", authenticationException);
-                session.removeAttribute("Authentication-Exception");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            model.addAttribute("authenticationException", new LoginException(null));
-        }
-
-        if (authenticationName != null) { // Выводим прощальное сообщение
+    public void authenticateOrLogout(Model model, HttpSession session, String authenticationName) {
+        if (authenticationName != null) {
             try {
                 model.addAttribute("authenticationName", authenticationName);
                 session.removeAttribute("Authentication-Name");
@@ -131,6 +118,7 @@ public class AppServiceImpl implements AppService {
 
     /**
      * Удаляет ошибку, если у существующего User пустое поле password
+     *
      * @param bindingResult BeanPropertyBindingResult
      * @return BeanPropertyBindingResult
      */

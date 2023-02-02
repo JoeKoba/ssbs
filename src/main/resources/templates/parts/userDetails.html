@@ -1,0 +1,49 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h3 class="modal-title">Delete or edit user</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form role="form" id="userprofile-form" th:action="@{/admin}" th:method="post" th:object="${user}">
+        <div class="modal-body">
+            <div class="container col-6 text-center">
+                <div class="form-group text-center">
+                    <input id="method" type="hidden" name="_method" value="post">
+                    <div>
+                        <label for="id">ID</label>
+                        <input type="text" class="form-control" th:field="*{id}" id="id" readonly>
+                    </div>
+                    <div>
+                        <label for="firstName">First name</label>
+                        <input type="text" class="form-control"
+                               th:field="*{firstName}" id="firstName">
+                    </div>
+                    <div>
+                        <label for="lastName">Last name</label>
+                        <input type="text" class="form-control" th:field="*{lastName}" id="lastName">
+                    </div>
+                    <div>
+                        <label for="age">Age</label>
+                        <input type="number" class="form-control"
+                               th:field="*{age}" id="age">
+                    </div>
+                    <div>
+                        <label for="email">E-mail</label>
+                        <input type="text" class="form-control"
+                               th:field="*{email}" id="email" autocomplete="username">
+                    </div>
+                    <div id="password-div">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               autocomplete="current-password">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn submit">Save</button>
+        </div>
+    </form>
+</div>

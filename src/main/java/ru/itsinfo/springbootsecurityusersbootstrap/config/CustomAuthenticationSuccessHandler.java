@@ -1,4 +1,4 @@
-package ru.itsinfo.springbootsecurityusersbootstrap.config.handler;
+package ru.itsinfo.springbootsecurityusersbootstrap.config;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -14,9 +14,10 @@ import java.util.Set;
 @Component
 public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    // Spring Security использует объект Authentication, пользователя авторизованной сессии.
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException, ServletException {
         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
 
         if (roles.contains("ROLE_ADMIN")) {

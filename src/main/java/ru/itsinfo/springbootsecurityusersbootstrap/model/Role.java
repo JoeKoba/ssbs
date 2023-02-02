@@ -2,18 +2,20 @@ package ru.itsinfo.springbootsecurityusersbootstrap.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
-public final class Role extends AbstractEntity<Integer> implements GrantedAuthority {
-    private static final long serialVersionUID = 7217778059836250424L;
+public class Role implements GrantedAuthority {
 
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(unique = true)
     private String name;
 
@@ -27,7 +29,7 @@ public final class Role extends AbstractEntity<Integer> implements GrantedAuthor
         this.name = name;
     }
 
-    public Role(Integer id) {
+    public Role(Long id) {
         this.setId(id);
     }
 
@@ -44,8 +46,45 @@ public final class Role extends AbstractEntity<Integer> implements GrantedAuthor
         return name;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name) && Objects.equals(users, role.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, users);
+    }
+    @Transient
+    public boolean isNew() {
+        return null == getId();
+    }
+
     @Override
     public String toString() {
-        return String.format("Role [id = %d; name = %s;]", this.getId(), name);
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                '}';
     }
 }

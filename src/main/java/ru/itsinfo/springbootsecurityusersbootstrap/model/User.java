@@ -13,12 +13,14 @@ import java.util.*;
 
 @Entity
 @Table(name = "users", indexes = {@Index(columnList = "name, last_name ASC")})
-public final class User extends AbstractEntity<Long> implements UserDetails {
-    private static final long serialVersionUID = 2715270014679085151L;
+public class User implements UserDetails {
 
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "name")
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name should be between 2 to 30")
     private String firstName;
 
     @Column(name = "last_name")
@@ -32,7 +34,6 @@ public final class User extends AbstractEntity<Long> implements UserDetails {
     @NotEmpty(message = "Password should not be empty")
     private String password;
 
-    @Positive(message = "Age should not be empty")
     private int age;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -140,10 +141,47 @@ public final class User extends AbstractEntity<Long> implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    @Transient
+    public boolean isNew() {
+        return null == getId();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(id, user.id)
+                && Objects.equals(firstName, user.firstName)
+                && Objects.equals(lastName, user.lastName)
+                && Objects.equals(email, user.email)
+                && Objects.equals(password, user.password)
+                && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, password, age, roles);
+    }
 
     @Override
     public String toString() {
-        return String.format("User [id = %d; firstName = %s; lastName = %s; email = %s; password = %s; roles = (%s)]",
-                this.getId(), firstName, lastName, email, password, Collections.singletonList(roles));
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                '}';
     }
 }

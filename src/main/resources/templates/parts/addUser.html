@@ -1,0 +1,32 @@
+<div class="container col-6 form-group text-center">
+    <form role="form" id="user-addform" th:action="@{/admin}" th:method="post" th:object="${user}">
+        <div>
+            <label for="newFirstName">First name</label>
+            <input type="text" class="form-control"
+                   th:field="*{firstName}" id="newFirstName">
+        </div>
+        <div>
+            <label for="newLastName">Last name</label>
+            <input type="text" class="form-control"
+                   th:field="*{lastName}" id="newLastName">
+        </div>
+        <div>
+            <label for="newAge">Age</label>
+            <input type="number" class="form-control"
+                   th:field="*{age}" id="newAge">
+        </div>
+        <div>
+            <label for="newEmail">E-mail</label>
+            <input type="text" class="form-control"
+                   th:field="*{email}" id="newEmail" autocomplete="username">
+        </div>
+        <div id="password-div">
+            <label for="newPassword">Password</label>
+            <input type="password" class="form-control"
+                   id="newPassword" name="password" autocomplete="current-password">
+        </div>
+        <div>
+            <button type="submit" class="btn btn-success mt-3">Add new User</button>
+        </div>
+    </form>
+</div>
