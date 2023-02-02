@@ -14,35 +14,35 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.itsinfo.springbootsecurityusersbootstrap.model.Role;
 import ru.itsinfo.springbootsecurityusersbootstrap.model.User;
-import ru.itsinfo.springbootsecurityusersbootstrap.repository.RoleRepository;
-import ru.itsinfo.springbootsecurityusersbootstrap.repository.UserRepository;
+import ru.itsinfo.springbootsecurityusersbootstrap.repository.RolesRepository;
+import ru.itsinfo.springbootsecurityusersbootstrap.repository.UsersRepository;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UsersRepository usersRepository;
+    private final RolesRepository rolesRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public UserServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository, PasswordEncoder passwordEncoder) {
+        this.usersRepository = usersRepository;
+        this.rolesRepository = rolesRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() ->
+        return usersRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException(String.format("Username %s not found", email))
         );
     }
 
     @Override
     public Iterable<Role> findAllRoles() {
-        return roleRepository.findAll();
+        return rolesRepository.findAll();
     }
 
     @Override
@@ -59,12 +59,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAllUsers() {
-        return userRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName"));
+        return usersRepository.findAll(Sort.by(Sort.Direction.ASC, "firstName", "lastName"));
     }
 
     @Override
     public User findUser(Long userId) throws IllegalArgumentException {
-        return userRepository.findById(userId).orElseThrow(() ->
+        return usersRepository.findById(userId).orElseThrow(() ->
                 new IllegalArgumentException(String.format("User with ID %d not found", userId)));
     }
 
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
             String oldPassword = user.getPassword();
             try {
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
+                usersRepository.save(user);
             } catch (DataIntegrityViolationException e) {
                 user.setPassword(oldPassword);
                 addErrorIfDataIntegrityViolationException(bindingResult);
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
                 user.setPassword(user.getPassword().isEmpty() ? // todo если нет такого юзера try
                         findUser(user.getId()).getPassword() :
                         passwordEncoder.encode(user.getPassword()));
-                userRepository.save(user);
+                usersRepository.save(user);
             } catch (DataIntegrityViolationException e) {
                 user.setPassword(oldPassword);
                 addErrorIfDataIntegrityViolationException(bindingResult);
@@ -140,6 +140,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        usersRepository.deleteById(userId);
     }
 }
